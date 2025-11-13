@@ -1,0 +1,1132 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CHC Theory - Interactive Learning</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: #333;
+            overflow-x: hidden;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        header {
+            text-align: center;
+            padding: 60px 20px;
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 20px;
+            margin-bottom: 40px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            animation: slideDown 0.8s ease-out;
+        }
+
+        @keyframes slideDown {
+            from {
+                transform: translateY(-100px);
+                opacity: 0;
+            }
+            to {
+                transform: translateY(0);
+                opacity: 1;
+            }
+        }
+
+        h1 {
+            font-size: 3em;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 20px;
+            animation: glow 2s ease-in-out infinite alternate;
+        }
+
+        @keyframes glow {
+            from {
+                filter: drop-shadow(0 0 5px rgba(102, 126, 234, 0.5));
+            }
+            to {
+                filter: drop-shadow(0 0 20px rgba(118, 75, 162, 0.8));
+            }
+        }
+
+        .subtitle {
+            font-size: 1.3em;
+            color: #555;
+            margin-top: 10px;
+        }
+
+        .nav-pills {
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap;
+            gap: 15px;
+            margin-bottom: 40px;
+        }
+
+        .pill {
+            padding: 12px 30px;
+            background: rgba(255, 255, 255, 0.9);
+            border: none;
+            border-radius: 50px;
+            cursor: pointer;
+            font-size: 1em;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+        }
+
+        .pill:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3);
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+        }
+
+        .pill.active {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            transform: scale(1.05);
+        }
+
+        .content-section {
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 20px;
+            padding: 40px;
+            margin-bottom: 30px;
+            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.2);
+            display: none;
+            animation: fadeIn 0.6s ease-out;
+        }
+
+        .content-section.active {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        h2 {
+            color: #667eea;
+            font-size: 2.5em;
+            margin-bottom: 20px;
+            border-bottom: 3px solid #764ba2;
+            padding-bottom: 10px;
+        }
+
+        h3 {
+            color: #764ba2;
+            font-size: 1.8em;
+            margin-top: 30px;
+            margin-bottom: 15px;
+        }
+
+        p {
+            line-height: 1.8;
+            margin-bottom: 20px;
+            font-size: 1.1em;
+            color: #444;
+        }
+
+        .ability-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 25px;
+            margin-top: 30px;
+        }
+
+        .ability-card {
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            padding: 25px;
+            border-radius: 15px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+            border-left: 5px solid #667eea;
+        }
+
+        .ability-card:hover {
+            transform: translateY(-5px) scale(1.02);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+            border-left-color: #764ba2;
+        }
+
+        .ability-card h4 {
+            color: #667eea;
+            font-size: 1.5em;
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .ability-icon {
+            font-size: 1.8em;
+        }
+
+        .ability-card p {
+            color: #555;
+            font-size: 1em;
+            margin: 0;
+        }
+
+        .ability-details {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.4s ease;
+            margin-top: 15px;
+            padding-top: 15px;
+            border-top: 2px solid rgba(102, 126, 234, 0.3);
+        }
+
+        .ability-card.expanded .ability-details {
+            max-height: 500px;
+        }
+
+        .narrow-ability {
+            background: rgba(255, 255, 255, 0.7);
+            padding: 10px;
+            margin: 8px 0;
+            border-radius: 8px;
+            font-size: 0.9em;
+        }
+
+        .narrow-ability strong {
+            color: #764ba2;
+        }
+
+        .timeline {
+            position: relative;
+            padding: 20px 0;
+            margin: 40px 0;
+        }
+
+        .timeline::before {
+            content: '';
+            position: absolute;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 4px;
+            height: 100%;
+            background: linear-gradient(180deg, #667eea, #764ba2);
+        }
+
+        .timeline-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 40px;
+            position: relative;
+        }
+
+        .timeline-item:nth-child(even) {
+            flex-direction: row-reverse;
+        }
+
+        .timeline-content {
+            width: 45%;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            padding: 25px;
+            border-radius: 15px;
+            color: white;
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
+            transition: transform 0.3s ease;
+        }
+
+        .timeline-content:hover {
+            transform: scale(1.05);
+        }
+
+        .timeline-year {
+            font-size: 1.5em;
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+
+        .timeline-dot {
+            position: absolute;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 20px;
+            height: 20px;
+            background: white;
+            border: 4px solid #764ba2;
+            border-radius: 50%;
+            z-index: 1;
+        }
+
+        .stratum-diagram {
+            background: white;
+            padding: 30px;
+            border-radius: 15px;
+            margin: 30px 0;
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.1);
+        }
+
+        .stratum-level {
+            margin: 20px 0;
+            padding: 20px;
+            border-radius: 10px;
+            text-align: center;
+            transition: transform 0.3s ease;
+        }
+
+        .stratum-level:hover {
+            transform: scale(1.03);
+        }
+
+        .stratum-3 {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            font-size: 1.5em;
+            font-weight: bold;
+        }
+
+        .stratum-2 {
+            background: linear-gradient(135deg, #84fab0, #8fd3f4);
+            margin: 20px 40px;
+            font-size: 1.2em;
+        }
+
+        .stratum-1 {
+            background: linear-gradient(135deg, #fa709a, #fee140);
+            margin: 20px 80px;
+            font-size: 1em;
+        }
+
+        .interactive-quiz {
+            background: linear-gradient(135deg, #f093fb, #f5576c);
+            color: white;
+            padding: 30px;
+            border-radius: 15px;
+            margin: 30px 0;
+        }
+
+        .quiz-question {
+            font-size: 1.3em;
+            margin-bottom: 20px;
+        }
+
+        .quiz-options {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        .quiz-option {
+            background: rgba(255, 255, 255, 0.2);
+            padding: 15px;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border: 2px solid transparent;
+        }
+
+        .quiz-option:hover {
+            background: rgba(255, 255, 255, 0.3);
+            transform: translateX(10px);
+        }
+
+        .quiz-option.correct {
+            border-color: #4CAF50;
+            background: rgba(76, 175, 80, 0.3);
+        }
+
+        .quiz-option.incorrect {
+            border-color: #f44336;
+            background: rgba(244, 67, 54, 0.3);
+        }
+
+        .quiz-result {
+            margin-top: 20px;
+            font-size: 1.2em;
+            font-weight: bold;
+            display: none;
+        }
+
+        .search-box {
+            width: 100%;
+            padding: 15px 20px;
+            font-size: 1.1em;
+            border: 3px solid #667eea;
+            border-radius: 50px;
+            margin-bottom: 20px;
+            outline: none;
+            transition: all 0.3s ease;
+        }
+
+        .search-box:focus {
+            box-shadow: 0 0 20px rgba(102, 126, 234, 0.5);
+            border-color: #764ba2;
+        }
+
+        .comparison-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 30px 0;
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.1);
+        }
+
+        .comparison-table th {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            padding: 15px;
+            text-align: left;
+        }
+
+        .comparison-table td {
+            padding: 15px;
+            border-bottom: 1px solid #ddd;
+        }
+
+        .comparison-table tr:hover {
+            background: #f5f7fa;
+        }
+
+        .key-point {
+            background: linear-gradient(135deg, #ffeaa7, #fdcb6e);
+            padding: 20px;
+            border-radius: 10px;
+            margin: 20px 0;
+            border-left: 5px solid #e17055;
+        }
+
+        .key-point h4 {
+            color: #d63031;
+            margin-bottom: 10px;
+        }
+
+        footer {
+            text-align: center;
+            padding: 30px;
+            background: rgba(255, 255, 255, 0.9);
+            border-radius: 20px;
+            margin-top: 40px;
+            color: #555;
+        }
+
+        @media (max-width: 768px) {
+            h1 {
+                font-size: 2em;
+            }
+
+            .ability-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .timeline::before {
+                left: 30px;
+            }
+
+            .timeline-item {
+                flex-direction: column !important;
+                align-items: flex-start;
+                padding-left: 60px;
+            }
+
+            .timeline-content {
+                width: 100%;
+            }
+
+            .timeline-dot {
+                left: 30px;
+            }
+
+            .stratum-2, .stratum-1 {
+                margin: 20px 10px;
+            }
+        }
+
+        .scroll-top {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.3);
+            transition: all 0.3s ease;
+            opacity: 0;
+            pointer-events: none;
+        }
+
+        .scroll-top.visible {
+            opacity: 1;
+            pointer-events: all;
+        }
+
+        .scroll-top:hover {
+            transform: translateY(-5px);
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>🧠 The Cattell-Horn-Carroll Theory</h1>
+            <p class="subtitle">Interactive Learning Experience</p>
+            <p style="margin-top: 15px; color: #777;">The Most Comprehensive Theory of Cognitive Abilities</p>
+        </header>
+
+        <div class="nav-pills">
+            <button class="pill active" onclick="showSection('overview')">Overview</button>
+            <button class="pill" onclick="showSection('history')">History</button>
+            <button class="pill" onclick="showSection('structure')">Structure</button>
+            <button class="pill" onclick="showSection('abilities')">Broad Abilities</button>
+            <button class="pill" onclick="showSection('comparison')">Models Comparison</button>
+            <button class="pill" onclick="showSection('quiz')">Test Your Knowledge</button>
+        </div>
+
+        <!-- Overview Section -->
+        <div id="overview" class="content-section active">
+            <h2>📚 What is CHC Theory?</h2>
+            <p>The Cattell-Horn-Carroll (CHC) theory of cognitive abilities is the <strong>most comprehensive and empirically supported psychometric theory</strong> of the structure of cognitive abilities to date.</p>
+            
+            <div class="key-point">
+                <h4>🎯 Key Significance</h4>
+                <p>CHC theory represents the integrated works of three brilliant minds: <strong>Raymond Cattell</strong>, <strong>John Horn</strong>, and <strong>John Carroll</strong>. It serves as the foundation for most modern intelligence tests and cognitive assessments.</p>
+            </div>
+
+            <h3>🌟 Why CHC Theory Matters</h3>
+            <div class="ability-grid">
+                <div class="ability-card">
+                    <h4><span class="ability-icon">📊</span> Empirical Support</h4>
+                    <p>Backed by decades of factor-analytic research and extensive validation studies across diverse populations.</p>
+                </div>
+                <div class="ability-card">
+                    <h4><span class="ability-icon">🎓</span> Educational Impact</h4>
+                    <p>Used extensively for organizing and interpreting intelligence tests, learning disability assessments, and neuropsychological evaluations.</p>
+                </div>
+                <div class="ability-card">
+                    <h4><span class="ability-icon">🔬</span> Scientific Foundation</h4>
+                    <p>Supported by developmental, neurocognitive, and outcome-criterion research across the lifespan.</p>
+                </div>
+                <div class="ability-card">
+                    <h4><span class="ability-icon">🌍</span> Universal Application</h4>
+                    <p>Factor structure is invariant across age, gender, ethnic, and cultural groups.</p>
+                </div>
+            </div>
+
+            <h3>📈 Current Model Overview</h3>
+            <p>The latest CHC model includes:</p>
+            <ul style="font-size: 1.1em; line-height: 2; margin-left: 40px; color: #555;">
+                <li><strong>16 Broad Abilities</strong> (Stratum II)</li>
+                <li><strong>80+ Narrow Abilities</strong> (Stratum I)</li>
+                <li><strong>General Intelligence (g)</strong> at the apex (Stratum III)</li>
+            </ul>
+        </div>
+
+        <!-- History Section -->
+        <div id="history" class="content-section">
+            <h2>📜 Evolution of CHC Theory</h2>
+            <p>The development of CHC theory spans over 80 years of research and refinement by some of psychology's greatest minds.</p>
+
+            <div class="timeline">
+                <div class="timeline-item">
+                    <div class="timeline-content">
+                        <div class="timeline-year">1940s</div>
+                        <h4>Cattell's Gf-Gc Theory</h4>
+                        <p>Raymond Cattell proposed the original dichotomous model distinguishing <strong>Fluid Intelligence (Gf)</strong> and <strong>Crystallized Intelligence (Gc)</strong> based on Thurstone's factor-analytic work.</p>
+                    </div>
+                    <div class="timeline-dot"></div>
+                </div>
+
+                <div class="timeline-item">
+                    <div class="timeline-content">
+                        <div class="timeline-year">1965</div>
+                        <h4>Horn's Expansion</h4>
+                        <p>John Horn expanded the model to include <strong>6 abilities</strong>: Gv (visual processing), Gsm (short-term memory), Glr (long-term retrieval), Gs (processing speed), and later Ga (auditory processing).</p>
+                    </div>
+                    <div class="timeline-dot"></div>
+                </div>
+
+                <div class="timeline-item">
+                    <div class="timeline-content">
+                        <div class="timeline-year">1990s</div>
+                        <h4>Further Refinements</h4>
+                        <p>Addition of <strong>Gt</strong> (reaction/decision speed), <strong>Gq</strong> (quantitative knowledge), and <strong>Grw</strong> (reading-writing abilities). The model became known as the <strong>Cattell-Horn Gf-Gc theory</strong>.</p>
+                    </div>
+                    <div class="timeline-dot"></div>
+                </div>
+
+                <div class="timeline-item">
+                    <div class="timeline-content">
+                        <div class="timeline-year">1993</div>
+                        <h4>Carroll's Three-Stratum Theory</h4>
+                        <p>John Carroll published his comprehensive review of factor-analytic research, proposing a <strong>hierarchical three-stratum model</strong> with general intelligence (g) at the apex.</p>
+                    </div>
+                    <div class="timeline-dot"></div>
+                </div>
+
+                <div class="timeline-item">
+                    <div class="timeline-content">
+                        <div class="timeline-year">1997-1998</div>
+                        <h4>CHC Integration</h4>
+                        <p>McGrew and Flanagan integrated the Cattell-Horn and Carroll models into a unified <strong>CHC taxonomy</strong>, accepted by both Horn and Carroll.</p>
+                    </div>
+                    <div class="timeline-dot"></div>
+                </div>
+
+                <div class="timeline-item">
+                    <div class="timeline-content">
+                        <div class="timeline-year">2012</div>
+                        <h4>Modern CHC Theory</h4>
+                        <p>Schneider and McGrew conducted extensive review, expanding the model to <strong>16 broad abilities</strong> and <strong>80+ narrow abilities</strong>. CHC theory continues to evolve with ongoing research.</p>
+                    </div>
+                    <div class="timeline-dot"></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Structure Section -->
+        <div id="structure" class="content-section">
+            <h2>🏗️ Hierarchical Structure</h2>
+            <p>CHC theory organizes cognitive abilities into three levels (strata) based on their breadth and generality.</p>
+
+            <div class="stratum-diagram">
+                <div class="stratum-level stratum-3">
+                    <strong>STRATUM III</strong><br>
+                    General Intelligence (g)<br>
+                    <small style="font-size: 0.8em; opacity: 0.9;">Most general cognitive ability</small>
+                </div>
+                
+                <div style="text-align: center; font-size: 2em; color: #667eea;">↓</div>
+                
+                <div class="stratum-level stratum-2">
+                    <strong>STRATUM II</strong><br>
+                    Broad Abilities (16)<br>
+                    <small>Gf, Gc, Gq, Grw, Gsm, Glr, Gv, Ga, Gs, Gt, etc.</small>
+                </div>
+                
+                <div style="text-align: center; font-size: 2em; color: #667eea;">↓</div>
+                
+                <div class="stratum-level stratum-1">
+                    <strong>STRATUM I</strong><br>
+                    Narrow Abilities (80+)<br>
+                    <small>Specific skills within each broad ability</small>
+                </div>
+            </div>
+
+            <div class="key-point">
+                <h4>🔗 Positive Intercorrelations</h4>
+                <p>Abilities within each level display positive correlations, meaning they are related but distinct. This allows for:</p>
+                <ul style="margin-left: 20px; margin-top: 10px;">
+                    <li>Narrow abilities → define Broad abilities</li>
+                    <li>Broad abilities → contribute to General intelligence (g)</li>
+                    <li>Each ability can be reliably distinguished despite relationships</li>
+                </ul>
+            </div>
+
+            <h3>📊 Conceptual Groupings</h3>
+            <div class="ability-grid">
+                <div class="ability-card">
+                    <h4><span class="ability-icon">💡</span> Reasoning</h4>
+                    <p>Abilities involving logical thinking, problem-solving, and inductive/deductive reasoning (e.g., Gf)</p>
+                </div>
+                <div class="ability-card">
+                    <h4><span class="ability-icon">📚</span> Acquired Knowledge</h4>
+                    <p>Learned information and skills from education and culture (e.g., Gc, Gq, Grw, Gkn)</p>
+                </div>
+                <div class="ability-card">
+                    <h4><span class="ability-icon">🧠</span> Memory & Efficiency</h4>
+                    <p>Storage, retrieval, and working memory capacities (e.g., Gsm, Glr)</p>
+                </div>
+                <div class="ability-card">
+                    <h4><span class="ability-icon">👁️</span> Sensory</h4>
+                    <p>Visual, auditory, and other sensory processing abilities (e.g., Gv, Ga)</p>
+                </div>
+                <div class="ability-card">
+                    <h4><span class="ability-icon">🏃</span> Motor</h4>
+                    <p>Physical movement and kinesthetic abilities (e.g., Gp, Gk)</p>
+                </div>
+                <div class="ability-card">
+                    <h4><span class="ability-icon">⚡</span> Speed & Efficiency</h4>
+                    <p>Rapidity of cognitive processing and reaction (e.g., Gs, Gt)</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Abilities Section -->
+        <div id="abilities" class="content-section">
+            <h2>🎯 The 16 Broad Abilities</h2>
+            <input type="text" class="search-box" id="abilitySearch" placeholder="🔍 Search for specific abilities..." onkeyup="filterAbilities()">
+            
+            <div class="ability-grid" id="abilitiesGrid">
+                <div class="ability-card" onclick="toggleAbility(this)">
+                    <h4><span class="ability-icon">💡</span> Fluid Intelligence (Gf)</h4>
+                    <p>Novel problem-solving and reasoning without relying on prior knowledge</p>
+                    <div class="ability-details">
+                        <div class="narrow-ability"><strong>Induction (I):</strong> Discovering underlying rules or patterns</div>
+                        <div class="narrow-ability"><strong>General Sequential Reasoning (RG):</strong> Drawing logical conclusions from premises</div>
+                        <div class="narrow-ability"><strong>Quantitative Reasoning (RQ):</strong> Reasoning with mathematical concepts</div>
+                    </div>
+                </div>
+
+                <div class="ability-card" onclick="toggleAbility(this)">
+                    <h4><span class="ability-icon">📚</span> Crystallized Intelligence (Gc)</h4>
+                    <p>Breadth and depth of acquired knowledge valued by culture</p>
+                    <div class="ability-details">
+                        <div class="narrow-ability"><strong>General Information (K0):</strong> Range of general knowledge</div>
+                        <div class="narrow-ability"><strong>Language Development (LD):</strong> Understanding spoken language</div>
+                        <div class="narrow-ability"><strong>Lexical Knowledge (VL):</strong> Vocabulary comprehension</div>
+                        <div class="narrow-ability"><strong>Listening Ability (LS):</strong> Comprehending oral communications</div>
+                        <div class="narrow-ability"><strong>Communication Ability (CM):</strong> Speaking effectively in real situations</div>
+                        <div class="narrow-ability"><strong>Grammatical Sensitivity (MY):</strong> Grammar awareness</div>
+                    </div>
+                </div>
+
+                <div class="ability-card" onclick="toggleAbility(this)">
+                    <h4><span class="ability-icon">🔢</span> Quantitative Knowledge (Gq)</h4>
+                    <p>Depth and breadth of mathematical knowledge and skills</p>
+                    <div class="ability-details">
+                        <div class="narrow-ability"><strong>Mathematical Knowledge (KM):</strong> General math knowledge</div>
+                        <div class="narrow-ability"><strong>Mathematical Achievement (A3):</strong> Measured math skills</div>
+                    </div>
+                </div>
+
+                <div class="ability-card" onclick="toggleAbility(this)">
+                    <h4><span class="ability-icon">✍️</span> Reading/Writing (Grw)</h4>
+                    <p>Reading comprehension, decoding, and written expression skills</p>
+                    <div class="ability-details">
+                        <div class="narrow-ability"><strong>Reading Decoding (RD):</strong> Recognizing and decoding words</div>
+                        <div class="narrow-ability"><strong>Reading Comprehension (RC):</strong> Understanding written text</div>
+                        <div class="narrow-ability"><strong>Reading Speed (RS):</strong> Rapid silent reading</div>
+                        <div class="narrow-ability"><strong>Spelling Ability (SG):</strong> Correct spelling</div>
+                        <div class="narrow-ability"><strong>Writing Ability (WA):</strong> Clear written expression</div>
+                        <div class="narrow-ability"><strong>Writing Speed (WS):</strong> Rapid text generation</div>
+                    </div>
+                </div>
+
+                <div class="ability-card" onclick="toggleAbility(this)">
+                    <h4><span class="ability-icon">🧠</span> Short-Term Memory (Gsm)</h4>
+                    <p>Apprehending and holding information in immediate awareness</p>
+                    <div class="ability-details">
+                        <div class="narrow-ability"><strong>Memory Span (MS):</strong> Recalling ordered elements immediately</div>
+                        <div class="narrow-ability"><strong>Working Memory (MW):</strong> Temporarily storing and manipulating information</div>
+                    </div>
+                </div>
+
+                <div class="ability-card" onclick="toggleAbility(this)">
+                    <h4><span class="ability-icon">💾</span> Long-Term Retrieval (Glr)</h4>
+                    <p>Storing and fluently retrieving information from long-term memory</p>
+                    <div class="ability-details">
+                        <div class="narrow-ability"><strong>Associative Memory (MA):</strong> Paired-associate learning</div>
+                        <div class="narrow-ability"><strong>Meaningful Memory (MM):</strong> Recalling meaningful content</div>
+                        <div class="narrow-ability"><strong>Naming Facility (NA):</strong> Rapidly producing names</div>
+                        <div class="narrow-ability"><strong>Ideational Fluency (FI):</strong> Producing related ideas rapidly</div>
+                    </div>
+                </div>
+
+                <div class="ability-card" onclick="toggleAbility(this)">
+                    <h4><span class="ability-icon">👁️</span> Visual Processing (Gv)</h4>
+                    <p>Generating, perceiving, and manipulating visual patterns and images</p>
+                    <div class="ability-details">
+                        <div class="narrow-ability"><strong>Visualization (Vz):</strong> Mental transformation of images</div>
+                        <div class="narrow-ability"><strong>Spatial Relations (SR):</strong> Mental rotation of images</div>
+                        <div class="narrow-ability"><strong>Closure Speed (CS):</strong> Identifying incomplete patterns</div>
+                        <div class="narrow-ability"><strong>Visual Memory (MV):</strong> Forming and recalling visual images</div>
+                    </div>
+                </div>
+
+                <div class="ability-card" onclick="toggleAbility(this)">
+                    <h4><span class="ability-icon">👂</span> Auditory Processing (Ga)</h4>
+                    <p>Detecting and processing meaningful nonverbal information in sound</p>
+                    <div class="ability-details">
+                        <div class="narrow-ability"><strong>Phonetic Coding (PC):</strong> Analyzing speech sounds</div>
+                        <div class="narrow-ability"><strong>Speech Sound Discrimination (US):</strong> Distinguishing speech sounds</div>
+                        <div class="narrow-ability"><strong>Memory for Sound Patterns (UM):</strong> Remembering sound patterns</div>
+                    </div>
+                </div>
+
+                <div class="ability-card" onclick="toggleAbility(this)">
+                    <h4><span class="ability-icon">⚡</span> Processing Speed (Gs)</h4>
+                    <p>Performing simple cognitive tasks quickly and automatically</p>
+                    <div class="ability-details">
+                        <div class="narrow-ability"><strong>Perceptual Speed (P):</strong> Rapid visual comparison</div>
+                        <div class="narrow-ability"><strong>Rate-of-Test-Taking (R9):</strong> Speed in completing tests</div>
+                        <div class="narrow-ability"><strong>Number Facility (N):</strong> Rapid arithmetic computation</div>
+                    </div>
+                </div>
+
+                <div class="ability-card" onclick="toggleAbility(this)">
+                    <h4><span class="ability-icon">⏱️</span> Reaction/Decision Speed (Gt)</h4>
+                    <p>Quickness in reacting and making decisions</p>
+                    <div class="ability-details">
+                        <div class="narrow-ability"><strong>Simple Reaction Time (R1):</strong> Speed of response to stimulus</div>
+                        <div class="narrow-ability"><strong>Choice Reaction Time (R2):</strong> Speed in choosing among alternatives</div>
+                        <div class="narrow-ability"><strong>Mental Comparison Speed (R7):</strong> Speed of comparing stimuli</div>
+                    </div>
+                </div>
+
+                <div class="ability-card" onclick="toggleAbility(this)">
+                    <h4><span class="ability-icon">🎓</span> Domain-Specific Knowledge (Gkn)</h4>
+                    <p>Specialized knowledge from specific domains (work, hobbies)</p>
+                    <div class="ability-details">
+                        <div class="narrow-ability"><strong>Foreign Language (KL):</strong> Knowledge of other languages</div>
+                        <div class="narrow-ability"><strong>Mechanical Knowledge (MK):</strong> Understanding tools and machines</div>
+                        <div class="narrow-ability"><strong>Knowledge of Signing (KF):</strong> Sign language proficiency</div>
+                    </div>
+                </div>
+
+                <div class="ability-card" onclick="toggleAbility(this)">
+                    <h4><span class="ability-icon">👃</span> Olfactory Abilities (Go)</h4>
+                    <p>Abilities related to the sense of smell</p>
+                    <div class="ability-details">
+                        <div class="narrow-ability"><strong>Olfactory Memory (OM):</strong> Memory for odors</div>
+                    </div>
+                </div>
+
+                <div class="ability-card" onclick="toggleAbility(this)">
+                    <h4><span class="ability-icon">👅</span> Tactile Abilities (Gh)</h4>
+                    <p>Abilities related to touch and haptic perception</p>
+                    <div class="ability-details">
+                        <div class="narrow-ability">Various tactile discrimination abilities</div>
+                    </div>
+                </div>
+
+                <div class="ability-card" onclick="toggleAbility(this)">
+                    <h4><span class="ability-icon">🏃</span> Psychomotor Abilities (Gp)</h4>
+                    <p>Physical movement precision and control</p>
+                    <div class="ability-details">
+                        <div class="narrow-ability">Abilities related to controlled physical movements</div>
+                    </div>
+                </div>
+
+                <div class="ability-card" onclick="toggleAbility(this)">
+                    <h4><span class="ability-icon">🤸</span> Kinesthetic Abilities (Gk)</h4>
+                    <p>Body movement and positional awareness</p>
+                    <div class="ability-details">
+                        <div class="narrow-ability">Abilities related to body position and movement sense</div>
+                    </div>
+                </div>
+
+                <div class="ability-card" onclick="toggleAbility(this)">
+                    <h4><span class="ability-icon">😊</span> Psychomotor Speed (Gps)</h4>
+                    <p>Speed of body movements and reactions</p>
+                    <div class="ability-details">
+                        <div class="narrow-ability">Speed of limb movement and motor responses</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Comparison Section -->
+        <div id="comparison" class="content-section">
+            <h2>⚖️ Comparing the Models</h2>
+            <p>Understanding the similarities and differences between the Cattell-Horn and Carroll models helps appreciate the integrated CHC framework.</p>
+
+            <h3>🤝 Key Similarities</h3>
+            <div class="key-point">
+                <ul style="margin-left: 20px; line-height: 2;">
+                    <li>Both include multiple broad abilities with similar descriptions</li>
+                    <li>Similar classification of narrow abilities</li>
+                    <li>Both based on extensive factor-analytic research</li>
+                    <li>Hierarchical organization of abilities</li>
+                </ul>
+            </div>
+
+            <h3>🔍 Major Structural Differences</h3>
+            <table class="comparison-table">
+                <thead>
+                    <tr>
+                        <th>Aspect</th>
+                        <th>Cattell-Horn Model</th>
+                        <th>Carroll Model</th>
+                        <th>CHC Integration</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><strong>General Ability (g)</strong></td>
+                        <td>❌ Does not include g at apex</td>
+                        <td>✅ Includes g at Stratum III</td>
+                        <td>✅ Includes g (accepted by most)</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Quantitative Ability (Gq)</strong></td>
+                        <td>Separate broad ability including quantitative knowledge AND reasoning</td>
+                        <td>Quantitative reasoning classified under Gf</td>
+                        <td>Gq as broad ability (knowledge focus)</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Reading/Writing (Grw)</strong></td>
+                        <td>Distinct broad factor</td>
+                        <td>Reading/writing as narrow abilities under Gc</td>
+                        <td>Grw as distinct broad ability</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Memory Abilities</strong></td>
+                        <td>Distinction between immediate apprehension (Gsm) and storage/retrieval (Glr)</td>
+                        <td>Combined memory and learning abilities under Gy</td>
+                        <td>Separate Gsm and Glr abilities</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Number of Broad Abilities</strong></td>
+                        <td>8-10 abilities</td>
+                        <td>8-9 broad abilities</td>
+                        <td>16 broad abilities (expanded)</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <div class="key-point">
+                <h4>🎯 The Integration Solution</h4>
+                <p>McGrew (1997) and Flanagan (1998) created a unified taxonomy that was accepted by both Horn and Carroll. This integration:</p>
+                <ul style="margin-left: 20px; margin-top: 10px;">
+                    <li>Provides a single framework for test classification</li>
+                    <li>Facilitates practical interpretation of cognitive performance</li>
+                    <li>Continues to evolve based on current research (dynamic model)</li>
+                    <li>Maintains theoretical richness while enabling practical application</li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- Quiz Section -->
+        <div id="quiz" class="content-section">
+            <h2>🎮 Test Your Knowledge</h2>
+            <p>Click on answers to check your understanding of CHC Theory!</p>
+
+            <div class="interactive-quiz" style="margin-top: 30px;">
+                <div class="quiz-question">1. Which three theorists are credited with developing CHC theory?</div>
+                <div class="quiz-options">
+                    <div class="quiz-option" onclick="checkAnswer(this, false)">Spearman, Thurstone, and Wechsler</div>
+                    <div class="quiz-option" onclick="checkAnswer(this, true)">Cattell, Horn, and Carroll</div>
+                    <div class="quiz-option" onclick="checkAnswer(this, false)">Binet, Simon, and Terman</div>
+                    <div class="quiz-option" onclick="checkAnswer(this, false)">Gardner, Sternberg, and Guilford</div>
+                </div>
+                <div class="quiz-result"></div>
+            </div>
+
+            <div class="interactive-quiz">
+                <div class="quiz-question">2. How many broad abilities are in the current CHC model?</div>
+                <div class="quiz-options">
+                    <div class="quiz-option" onclick="checkAnswer(this, false)">8 abilities</div>
+                    <div class="quiz-option" onclick="checkAnswer(this, false)">10 abilities</div>
+                    <div class="quiz-option" onclick="checkAnswer(this, true)">16 abilities</div>
+                    <div class="quiz-option" onclick="checkAnswer(this, false)">20 abilities</div>
+                </div>
+                <div class="quiz-result"></div>
+            </div>
+
+            <div class="interactive-quiz">
+                <div class="quiz-question">3. What does Gf stand for?</div>
+                <div class="quiz-options">
+                    <div class="quiz-option" onclick="checkAnswer(this, false)">General Factors</div>
+                    <div class="quiz-option" onclick="checkAnswer(this, true)">Fluid Intelligence</div>
+                    <div class="quiz-option" onclick="checkAnswer(this, false)">Fundamental Fluency</div>
+                    <div class="quiz-option" onclick="checkAnswer(this, false)">Factual Functions</div>
+                </div>
+                <div class="quiz-result"></div>
+            </div>
+
+            <div class="interactive-quiz">
+                <div class="quiz-question">4. Which stratum represents the most general level of ability?</div>
+                <div class="quiz-options">
+                    <div class="quiz-option" onclick="checkAnswer(this, false)">Stratum I (Narrow abilities)</div>
+                    <div class="quiz-option" onclick="checkAnswer(this, false)">Stratum II (Broad abilities)</div>
+                    <div class="quiz-option" onclick="checkAnswer(this, true)">Stratum III (General intelligence - g)</div>
+                    <div class="quiz-option" onclick="checkAnswer(this, false)">All strata are equally general</div>
+                </div>
+                <div class="quiz-result"></div>
+            </div>
+
+            <div class="interactive-quiz">
+                <div class="quiz-question">5. What is the primary difference between Gc and Gf?</div>
+                <div class="quiz-options">
+                    <div class="quiz-option" onclick="checkAnswer(this, false)">Gc is faster than Gf</div>
+                    <div class="quiz-option" onclick="checkAnswer(this, true)">Gc is acquired knowledge; Gf is novel problem-solving</div>
+                    <div class="quiz-option" onclick="checkAnswer(this, false)">Gc is visual; Gf is auditory</div>
+                    <div class="quiz-option" onclick="checkAnswer(this, false)">There is no significant difference</div>
+                </div>
+                <div class="quiz-result"></div>
+            </div>
+
+            <div class="interactive-quiz">
+                <div class="quiz-question">6. When was the original Gf-Gc theory first proposed?</div>
+                <div class="quiz-options">
+                    <div class="quiz-option" onclick="checkAnswer(this, false)">1920s</div>
+                    <div class="quiz-option" onclick="checkAnswer(this, true)">1940s</div>
+                    <div class="quiz-option" onclick="checkAnswer(this, false)">1960s</div>
+                    <div class="quiz-option" onclick="checkAnswer(this, false)">1990s</div>
+                </div>
+                <div class="quiz-result"></div>
+            </div>
+
+            <div class="interactive-quiz">
+                <div class="quiz-question">7. Which ability involves the comprehension and production of written language?</div>
+                <div class="quiz-options">
+                    <div class="quiz-option" onclick="checkAnswer(this, false)">Ga (Auditory Processing)</div>
+                    <div class="quiz-option" onclick="checkAnswer(this, true)">Grw (Reading/Writing)</div>
+                    <div class="quiz-option" onclick="checkAnswer(this, false)">Gv (Visual Processing)</div>
+                    <div class="quiz-option" onclick="checkAnswer(this, false)">Gc (Crystallized Intelligence)</div>
+                </div>
+                <div class="quiz-result"></div>
+            </div>
+
+            <div class="interactive-quiz">
+                <div class="quiz-question">8. Is CHC theory static or dynamic?</div>
+                <div class="quiz-options">
+                    <div class="quiz-option" onclick="checkAnswer(this, false)">Static - it never changes</div>
+                    <div class="quiz-option" onclick="checkAnswer(this, true)">Dynamic - it evolves with research</div>
+                    <div class="quiz-option" onclick="checkAnswer(this, false)">It was dynamic but is now static</div>
+                    <div class="quiz-option" onclick="checkAnswer(this, false)">Neither static nor dynamic</div>
+                </div>
+                <div class="quiz-result"></div>
+            </div>
+        </div>
+
+        <footer>
+            <h3>🎓 Learn More About CHC Theory</h3>
+            <p>This interactive guide is based on the comprehensive research of Cattell, Horn, Carroll, McGrew, Flanagan, Schneider, and many other contributors to cognitive psychology.</p>
+            <p style="margin-top: 15px; color: #999; font-size: 0.9em;">CHC Theory continues to evolve as new research emerges. Stay curious and keep learning! 🧠✨</p>
+        </footer>
+    </div>
+
+    <div class="scroll-top" onclick="scrollToTop()">↑</div>
+
+    <script>
+        // Section Navigation
+        function showSection(sectionId) {
+            // Hide all sections
+            document.querySelectorAll('.content-section').forEach(section => {
+                section.classList.remove('active');
+            });
+            
+            // Remove active class from all pills
+            document.querySelectorAll('.pill').forEach(pill => {
+                pill.classList.remove('active');
+            });
+            
+            // Show selected section
+            document.getElementById(sectionId).classList.add('active');
+            
+            // Add active class to clicked pill
+            event.target.classList.add('active');
+            
+            // Scroll to top smoothly
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        // Toggle Ability Details
+        function toggleAbility(card) {
+            card.classList.toggle('expanded');
+        }
+
+        // Search Abilities
+        function filterAbilities() {
+            const searchTerm = document.getElementById('abilitySearch').value.toLowerCase();
+            const cards = document.querySelectorAll('#abilitiesGrid .ability-card');
+            
+            cards.forEach(card => {
+                const text = card.textContent.toLowerCase();
+                if (text.includes(searchTerm)) {
+                    card.style.display = 'block';
+                    card.style.animation = 'fadeIn 0.3s ease-out';
+                } else {
+                    card.style.display = 'none';
+                }
+            });
+        }
+
+        // Quiz Answer Checking
+        function checkAnswer(option, isCorrect) {
+            const quizBox = option.closest('.interactive-quiz');
+            const options = quizBox.querySelectorAll('.quiz-option');
+            const result = quizBox.querySelector('.quiz-result');
+            
+            // Remove previous selections
+            options.forEach(opt => {
+                opt.classList.remove('correct', 'incorrect');
+            });
+            
+            // Mark answer
+            if (isCorrect) {
+                option.classList.add('correct');
+                result.textContent = '✅ Correct! Great job!';
+                result.style.color = '#4CAF50';
+            } else {
+                option.classList.add('incorrect');
+                result.textContent = '❌ Not quite. Try again!';
+                result.style.color = '#f44336';
+            }
+            
+            result.style.display = 'block';
+        }
+
+        // Scroll to Top
+        function scrollToTop() {
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        // Show/Hide Scroll Top Button
+        window.addEventListener('scroll', function() {
+            const scrollTop = document.querySelector('.scroll-top');
+            if (window.pageYOffset > 300) {
+                scrollTop.classList.add('visible');
+            } else {
+                scrollTop.classList.remove('visible');
+            }
+        });
+
+        // Add animation on scroll for ability cards
+        const observerOptions = {
+            threshold: 0.1,
+            rootMargin: '0px 0px -100px 0px'
+        };
+
+        const observer = new IntersectionObserver(function(entries) {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.style.animation = 'fadeIn 0.6s ease-out';
+                }
+            });
+        }, observerOptions);
+
+        document.querySelectorAll('.ability-card').forEach(card => {
+            observer.observe(card);
+        });
+
+        // Add interactive hover effects to timeline
+        document.querySelectorAll('.timeline-content').forEach(item => {
+            item.addEventListener('mouseenter', function() {
+                this.style.transform = 'scale(1.05)';
+            });
+            item.addEventListener('mouseleave', function() {
+                this.style.transform = 'scale(1)';
+            });
+        });
+
+        // Console Easter Egg
+        console.log('%c🧠 Welcome to CHC Theory! 🧠', 'color: #667eea; font-size: 24px; font-weight: bold;');
+        console.log('%cYou\'re exploring one of the most comprehensive theories of human intelligence!', 'color: #764ba2; font-size: 14px;');
+    </script>
+</body>
+</html>
